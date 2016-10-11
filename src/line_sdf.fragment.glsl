@@ -6,9 +6,7 @@ precision mediump float;
 #define highp
 #endif
 
-uniform lowp float u_opacity;
 
-uniform float u_blur;
 uniform sampler2D u_image;
 uniform float u_sdfgamma;
 uniform float u_mix;
