@@ -66,7 +66,11 @@ module.exports = {
   symbolSDF: {
     fragmentSource: fs.readFileSync(path.join(__dirname, 'src/symbol_sdf.fragment.glsl'), 'utf8'),
     vertexSource: fs.readFileSync(path.join(__dirname, 'src/symbol_sdf.vertex.glsl'), 'utf8')
-  }
+  },
+	shape: {
+			fragmentSource: fs.readFileSync(path.join(__dirname, 'src/shape.fragment.glsl'), 'utf8'),
+			vertexSource: fs.readFileSync(path.join(__dirname, 'src/shape.vertex.glsl'), 'utf8')
+	}
 };
 
 module.exports.util = fs.readFileSync(path.join(__dirname, 'util.vertex.glsl'), 'utf8');
