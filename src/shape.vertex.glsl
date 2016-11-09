@@ -7,44 +7,32 @@ precision highp float;
 #endif
 
 uniform mat4 u_matrix;
-uniform bool u_scale_with_map;
 uniform vec2 u_extrude_scale;
-uniform float u_devicepixelratio;
+uniform vec2 u_texsize;
 
 attribute vec2 a_pos;
+attribute vec2 a_offset;
+attribute vec2 a_texture_pos;
 
 #pragma mapbox: define lowp vec4 color
 #pragma mapbox: define mediump float radius
 #pragma mapbox: define lowp float blur
 #pragma mapbox: define lowp float opacity
-#pragma mapbox: define mediump float type
 
 varying vec2 v_extrude;
-varying lowp float v_antialiasblur;
+varying vec2 v_tex;
 
 void main(void) {
     #pragma mapbox: initialize lowp vec4 color
     #pragma mapbox: initialize mediump float radius
     #pragma mapbox: initialize lowp float blur
     #pragma mapbox: initialize lowp float opacity
-		#pragma mapbox: initialize mediump float type
 
-    // unencode the extrusion vector that we snuck into the a_pos vector
-    v_extrude = vec2(mod(a_pos, 2.0) * 2.0 - 1.0);
+		vec2 a_tex = a_texture_pos.xy;
 
-    vec2 extrude = v_extrude * radius * u_extrude_scale;
-    // multiply a_pos by 0.5, since we had it * 2 in order to sneak
-    // in extrusion data
-    gl_Position = u_matrix * vec4(floor(a_pos * 0.5), 0, 1);
+		vec2 extrude = u_extrude_scale * (a_offset / 64.0);
 
-    if (u_scale_with_map) {
-        gl_Position.xy += extrude;
-    } else {
-        gl_Position.xy += extrude * gl_Position.w;
-    }
+		gl_Position = u_matrix * vec4(a_pos, 0, 1) + vec4(extrude, 0, 0);
 
-    // This is a minimum blur distance that serves as a faux-antialiasing for
-    // the circle. since blur is a ratio of the circle's size and the intent is
-    // to keep the blur at roughly 1px, the two are inversely related.
-    v_antialiasblur = 1.0 / u_devicepixelratio / radius;
+		v_tex = a_tex / u_texsize;
 }
